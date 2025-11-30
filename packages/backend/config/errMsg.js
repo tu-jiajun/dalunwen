@@ -15,4 +15,9 @@ module.exports = {
     code: 40002,
     message: '未登录，请先登录！',
   },
+  USERNAME_ALREADY_EXISTS: {
+    statusCode: 200,
+    code: 20001,
+    message: '用户名已被占用',
+  },
 };

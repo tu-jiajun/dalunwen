@@ -6,8 +6,7 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/',
-      redirect: '/home',
+      path: '/', redirect: '/dashboard',
     },
     {
       path: '/login',
@@ -19,10 +18,54 @@ const router = createRouter({
       },
     },
     {
-      path: '/home',
-      name: 'Home',
-      component: () => import('@/pages/HomePage/HomePage.vue'),
+      path: '/register',
+      name: 'Register',
+      component: () => import('@/pages/RegisterPage/RegisterPage.vue'),
+      meta: {
+        title: '注册',
+        isLoginPage: true,
+      },
     },
+    {
+      path: '/dashboard',
+      component: () => import('@/pages/DashBoard/DashBoard.vue'),
+      children: [
+        { path: '', redirect: 'dashboard/clinicaltrialstotal' }, 
+        {
+          path: 'clinicaltrialstotal',
+          name: 'clinicaltrialsTotal',
+          component: () => import('@/pages/DashBoard/components/ClinicaltrialsTotal.vue'),
+          meta: { breadcrumb: '试验管理 > 临床试验汇总' }
+        },
+        {
+          path: 'clinicaltrials',
+          name: 'clinicaltrials.gov',
+          component: () => import('@/pages/DashBoard/components/ClinicaltrialsGov.vue'),
+          meta: { breadcrumb: '试验管理 > clinicaltrials.gov' }
+        },
+        {
+          path: 'chictrorgcn',
+          name: 'chictr.org.cn',
+          component: () => import('@/pages/DashBoard/components/ChictrOrgCn.vue'),
+          meta: { breadcrumb: '试验管理 > chictr.org.cn' }
+        },
+        {
+          path: 'ct-rep',
+          name: 'ct-rep',
+          component: () => import('@/pages/DashBoard/components/WarehousePage/WarehousePage.vue'),
+          meta: { breadcrumb: 'CT仓库' }
+        },
+        {
+          path: 'ct-rep/:warehouseId',
+          name: 'WarehouseCTPage',
+          component: () => import('@/pages/DashBoard/components/WarehouseCTPage/WarehouseCTPage.vue'),
+          meta: { 
+            breadcrumb: 'CT仓库 - 详情',
+            keepAlive: true
+          },
+      }
+      ]
+    }
   ],
 });
 

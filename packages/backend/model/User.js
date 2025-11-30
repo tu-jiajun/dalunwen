@@ -1,6 +1,6 @@
 const { DataTypes } = require('sequelize');
 const bcrypt = require('bcryptjs');
-const sequelize = require('../config/db');
+const sequelize  = require('../config/db'); 
 
 // 定义 User 模型（对应 MySQL 中的 users 表，Sequelize 会自动 pluralize 表名）
 const User = sequelize.define('User', {
@@ -50,9 +50,16 @@ User.prototype.comparePassword = async function(enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
-// 同步模型到数据库（开发环境：不存在表则创建，存在则不修改；生产环境注释掉）
-if (process.env.NODE_ENV === 'development') {
-  User.sync({ alter: true }); // alter: true 表示更新表结构（不删除数据）
-}
+User.associate = function(models) {
+  // 仅当别名不存在时才定义
+  if (!User.associations?.warehouses) {
+    User.hasMany(models.UserWarehouse, {
+      foreignKey: 'user_id',
+      as: 'warehouses', // 唯一别名，仅这里定义
+      onDelete: 'RESTRICT',
+      onUpdate: 'CASCADE'
+    });
+  }
+};
 
 module.exports = User;

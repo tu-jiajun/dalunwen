@@ -86,6 +86,27 @@ const api = {
   register(username: string, password: string) {
     return apiClient.post('/api/users/register', { username, password });
   },
+  CTAll({page, size}: { page: number; size: number }) {
+    return apiClient.get(`api/ct/paged?tableType=all&page=${page}&pageSize=${size}`);
+  },
+  CTUSA({page, size}: { page: number; size: number }) {
+    return apiClient.get(`api/ct/paged?tableType=usa&page=${page}&pageSize=${size}`);
+  },
+  CTChina({page, size}: { page: number; size: number }) {
+    return apiClient.get(`api/ct/paged?tableType=china&page=${page}&pageSize=${size}`);
+  },
+  getWarehouseByUserId(userId: string) {
+    return apiClient.get(`api/warehouse/list?userId=${userId}`);
+  },
+  createWarehouse(data: { user_id: number; warehouse_name: string }) {
+    return apiClient.post(`api/warehouse`, data);
+  },
+  updateWarehouse(id: number, data: { warehouse_name: string }) {
+    return apiClient.put(`api/warehouse/${id}`, data);
+  },
+  deleteWarehouse(rowId: number) {
+    return apiClient.delete(`api/warehouse/${rowId}`);
+  },
 };
 
 export default api;

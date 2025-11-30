@@ -17,15 +17,14 @@ exports.register = async (ctx) => {
   // 检查用户名是否已存在（Sequelize 语法：findOne + where）
   const existingUser = await User.findOne({ where: { username } });
   if (existingUser) {
-    ctx.status = 400;
-    throw new Error('用户名已被占用');
+    throw new Error('USERNAME_ALREADY_EXISTS');
   }
 
   const user = await User.create({ username, password });
 
   // 生成 Token
   const token = generateToken(user.id); 
-  const tokenExpiration = user.token_expiration; // 下划线格式（因模型配置 underscored: true）
+  const tokenExpiration = Date.now() + 7 * 24 * 60 * 60 * 1000;
 
   // 返回结果（格式不变，前端无需适配）
   ctx.body = {

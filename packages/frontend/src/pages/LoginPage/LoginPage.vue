@@ -36,6 +36,11 @@
           </el-input>
         </el-form-item>
 
+        <!-- 没有账号，点我注册 -->
+        <el-form-item>
+          <el-link type="primary" @click="handleToRegisterPage">没有账号，点我注册</el-link>
+        </el-form-item>
+
         <el-form-item>
           <el-button
             type="primary"
@@ -96,6 +101,10 @@ const handleLogin = async () => {
     isLoading.value = false;
   }
 };
+
+const handleToRegisterPage = () => {
+  router.push('/register');
+};
 </script>
 
 <style scoped lang="less">
@@ -130,8 +139,7 @@ const handleLogin = async () => {
   width: 100%;
 
   .form-input {
-    height: 44px;
-    margin-bottom: 20px;
+    height: 44px;    
     border-radius: 6px;
   }
 

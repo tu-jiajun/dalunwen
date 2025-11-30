@@ -6,6 +6,9 @@ require('./config/db');
 const errorHandler = require('./middleware/errorHandler');
 const globalAuth = require('./middleware/globalAuth');
 const userRouter = require('./router/userRouter');
+const CTRouter = require('./router/CTRouter');
+const userWarehouseRouter = require('./router/userWarehouseRouter');
+const initDatabase = require('./config/initDatabase');
 
 // 初始化 Koa 实例
 const app = new Koa();
@@ -31,9 +34,10 @@ app.use(bodyParser({
 // 全局鉴权中间件
 app.use(globalAuth);
 
-//  路由注册（所有用户相关接口前缀 /api/users）
+//  路由注册
 app.use(userRouter.routes()).use(userRouter.allowedMethods());
-
+app.use(CTRouter.routes()).use(CTRouter.allowedMethods());
+app.use(userWarehouseRouter.routes()).use(userWarehouseRouter.allowedMethods());
 
 // 启动服务器
 app.listen(PORT, () => {
