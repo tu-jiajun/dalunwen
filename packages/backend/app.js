@@ -8,6 +8,7 @@ const globalAuth = require('./middleware/globalAuth');
 const userRouter = require('./router/userRouter');
 const CTRouter = require('./router/CTRouter');
 const userWarehouseRouter = require('./router/userWarehouseRouter');
+const clinicalTrialWarehouseRouter = require('./router/clinicalTrialWarehouseRouter');
 const initDatabase = require('./config/initDatabase');
 
 // 初始化 Koa 实例
@@ -38,6 +39,7 @@ app.use(globalAuth);
 app.use(userRouter.routes()).use(userRouter.allowedMethods());
 app.use(CTRouter.routes()).use(CTRouter.allowedMethods());
 app.use(userWarehouseRouter.routes()).use(userWarehouseRouter.allowedMethods());
+app.use(clinicalTrialWarehouseRouter.routes()).use(clinicalTrialWarehouseRouter.allowedMethods());
 
 // 启动服务器
 app.listen(PORT, () => {

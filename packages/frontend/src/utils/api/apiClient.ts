@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { ElMessage } from 'element-plus';
 import type { UserInfo } from '@/types/user';
-import { useRouter } from 'vue-router';
 import router from '@/router/index';
 
 let baseUrl = import.meta.env.VITE_API_BASE_URL;
@@ -36,15 +35,14 @@ apiClient.interceptors.request.use(
       ElMessage.error('用户信息异常，请重新登录');
       return Promise.reject(new Error('用户信息异常'));
     }
-
     const tokenExpiration = userInfo?.tokenExpiration ?? 0;
-    if (tokenExpiration && new Date().getTime() > tokenExpiration) {
+    const now = new Date().getTime()
+    if (now > tokenExpiration) {
       localStorage.removeItem('userInfo');
       router.push('/');
       ElMessage.error('登录已过期，请重新登录');
       return Promise.reject(new Error('登录已过期，请重新登录'));
     }
-
     if (!userInfo) {
       router.push('/login');
       ElMessage.error('用户信息异常，请重新登录');
@@ -78,35 +76,4 @@ apiClient.interceptors.response.use(
   }
 );
 
-const api = {
-  baseUrl,
-  login(username: string, password: string) {
-    return apiClient.post('/api/users/login', { username, password });
-  },
-  register(username: string, password: string) {
-    return apiClient.post('/api/users/register', { username, password });
-  },
-  CTAll({page, size}: { page: number; size: number }) {
-    return apiClient.get(`api/ct/paged?tableType=all&page=${page}&pageSize=${size}`);
-  },
-  CTUSA({page, size}: { page: number; size: number }) {
-    return apiClient.get(`api/ct/paged?tableType=usa&page=${page}&pageSize=${size}`);
-  },
-  CTChina({page, size}: { page: number; size: number }) {
-    return apiClient.get(`api/ct/paged?tableType=china&page=${page}&pageSize=${size}`);
-  },
-  getWarehouseByUserId(userId: string) {
-    return apiClient.get(`api/warehouse/list?userId=${userId}`);
-  },
-  createWarehouse(data: { user_id: number; warehouse_name: string }) {
-    return apiClient.post(`api/warehouse`, data);
-  },
-  updateWarehouse(id: number, data: { warehouse_name: string }) {
-    return apiClient.put(`api/warehouse/${id}`, data);
-  },
-  deleteWarehouse(rowId: number) {
-    return apiClient.delete(`api/warehouse/${rowId}`);
-  },
-};
-
-export default api;
+export default apiClient;

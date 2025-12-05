@@ -19,13 +19,13 @@
               <span>试验管理</span>
             </template>
             <el-menu-item-group title="">
-              <el-menu-item index="clinicaltrialstotal">临床试验汇总</el-menu-item>
-              <el-menu-item index="clinicaltrials">clinicaltrials.gov</el-menu-item>
-              <el-menu-item index="chictrorgcn">chictr.org.cn</el-menu-item>
+              <el-menu-item index="/dashboard/clinicaltrialstotal">临床试验汇总</el-menu-item>
+              <el-menu-item index="/dashboard/clinicaltrials">clinicaltrials.gov</el-menu-item>
+              <el-menu-item index="/dashboard/chictrorgcn">chictr.org.cn</el-menu-item>
             </el-menu-item-group>
           </el-sub-menu>
           
-          <el-menu-item index="ct-rep">
+          <el-menu-item index="/dashboard/ct-rep">
             <el-icon><Document /></el-icon>
             <span>CT仓库</span>
           </el-menu-item> 
@@ -36,17 +36,17 @@
               <span>试验匹配</span>
             </template>
             <el-menu-item-group title="">
-              <el-menu-item index="CT_match1">患者匹配临床试验</el-menu-item>
-              <el-menu-item index="CT_match2">临床试验匹配临床试验</el-menu-item>
+              <el-menu-item index="/dashboard/CT_match1">患者匹配临床试验</el-menu-item>
+              <el-menu-item index="/dashboard/CT_match2">临床试验匹配临床试验</el-menu-item>
             </el-menu-item-group>
           </el-sub-menu>
           
-          <el-menu-item index="ct-gen">
+          <el-menu-item index="/dashboard/ct-gen">
             <el-icon><Document /></el-icon>
             <span>临床试验方案生成</span>
           </el-menu-item>
 
-          <el-menu-item index="ct-gen">
+          <el-menu-item index="/dashboard/ct-trend">
             <el-icon><Document /></el-icon>
             <span>临床试验趋势分析</span>
           </el-menu-item>
@@ -79,13 +79,26 @@ const defaultRouter = "clinicaltrialstotal"
 const currentBreadcrumb = ref(route.meta.breadcrumb);
 
 // 菜单选中状态
-const activeMenuKey = ref(route.path.replace("/dashboard/", ""));
+const getActiveMenuKey = (path: string) => {
+  const basePath = path.replace("/dashboard/", "");
+  // 对于 ct-rep 子路由，应该激活主菜单项
+  if (basePath.startsWith('ct-rep')) {
+    return 'ct-rep';
+  }
+  // 对于 chictrorgcn 和 clinicaltrials 子路由，激活对应的主菜单项
+  if (basePath.startsWith('chictrorgcn') || basePath.startsWith('clinicaltrials')) {
+    return 'clinicaltrials-group';
+  }
+  return basePath;
+};
+
+const activeMenuKey = ref(getActiveMenuKey(route.path));
 
 // 监听路由变化，自动更新面包屑和菜单选中状态
 watch(
   () => route.path,
   (newPath) => {
-    activeMenuKey.value = newPath.replace("/dashboard/", "");
+    activeMenuKey.value = getActiveMenuKey(newPath);
     currentBreadcrumb.value = route.meta.breadcrumb;
   },
   { immediate: true }

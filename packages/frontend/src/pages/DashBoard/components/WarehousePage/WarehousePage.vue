@@ -53,9 +53,9 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
-import { ElMessage, ElMessageBox } from "element-plus";
+import { ElMessage } from "element-plus";
 import { useRouter } from "vue-router";
-import api from "@/utils/api";
+import api from '@/utils/api/index';
 
 import AddWarehouse from "./components/AddButton.vue";
 import EditWarehouse from "./components/EditWarehouse.vue";
@@ -158,7 +158,7 @@ const openAddModal = () => {
 };
 
 const handleRowClick = (row: Warehouse) => {
-  router.push(`/ct-rep/${row.id}`); 
+  router.push(`ct-rep/${row.id}`); 
 };
 
 onMounted(() => {

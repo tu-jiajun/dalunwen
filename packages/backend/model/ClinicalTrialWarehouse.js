@@ -22,13 +22,13 @@ const ClinicalTrialWarehouse = sequelize.define('ClinicalTrialWarehouse', {
     }
   },
   nct_number: {
-    type: DataTypes.STRING(50),
+    type: DataTypes.STRING(30),
     allowNull: true,
     trim: true,
     comment: '关联美国临床试验表NCT号（clinicaltrila_usa.nct_number）'
   },
   reg_number: {
-    type: DataTypes.STRING(50),
+    type: DataTypes.STRING(30),
     allowNull: true,
     trim: true,
     comment: '关联中国临床试验备案号（clinical_china.reg_number）'

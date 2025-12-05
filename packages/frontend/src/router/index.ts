@@ -61,7 +61,6 @@ const router = createRouter({
           component: () => import('@/pages/DashBoard/components/WarehouseCTPage/WarehouseCTPage.vue'),
           meta: { 
             breadcrumb: 'CT仓库 - 详情',
-            keepAlive: true
           },
       }
       ]

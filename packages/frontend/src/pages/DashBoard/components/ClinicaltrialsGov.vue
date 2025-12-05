@@ -11,6 +11,16 @@
         <el-table-column prop="enrollment" label="招募人数" width="120" />
         <el-table-column prop="start_date" label="开始日期" width="150" />
         <el-table-column prop="last_update_posted" label="最后更新" width="150" />
+        <!-- 添加到仓库按钮列 -->
+        <el-table-column label="操作" width="150" fixed="right">
+          <template #default="scope">
+            <AddToWarehouseButton 
+              :row-data="scope.row" 
+              :user-id="currentUserId"
+              @added-to-warehouse="handleAddedToWarehouse"
+            />
+          </template>
+        </el-table-column>
       </el-table>
 
       <!-- 分页组件 -->
@@ -30,14 +40,19 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import { ElMessage, ElLoading } from "element-plus";
-import api from "@/utils/api";
-import type { ClinicalTrialUSA as ClinicalTrial } from '@/types/user';
+import api from '@/utils/api/index';
+import type { ClinicalTrialUSA as ClinicalTrial } from '@/types/clinicaltrial';
+import AddToWarehouseButton from './components/AddToWarehouseButton.vue'; // 导入新组件
 
 const clinicalTrials = ref<ClinicalTrial[]>([]);
 const currentPage = ref(1);
 const pageSize = ref(10);
 const totalCount = ref(0);
 const loading = ref(false);
+
+// 获取当前用户ID
+const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
+const currentUserId = userInfo.userId ?? 0;
 
 const fetchClinicalTrials = async () => {
   loading.value = true;
@@ -74,6 +89,13 @@ const fetchClinicalTrials = async () => {
 const handlePageChange = (page: number) => {
   currentPage.value = page;
   fetchClinicalTrials();
+};
+
+// 处理添加到仓库事件
+const handleAddedToWarehouse = (warehouseId: number, rowData: any) => {
+  console.log('添加到仓库:', warehouseId, rowData);
+  // 这里可以添加具体的业务逻辑，比如调用API将数据保存到指定仓库
+  ElMessage.success(`已添加到仓库: ${warehouseId}`);
 };
 
 // 组件挂载时初始化数据

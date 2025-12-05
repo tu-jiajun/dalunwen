@@ -61,7 +61,7 @@ import { ref, reactive } from 'vue';
 import { useRouter } from 'vue-router';
 import { ElMessage } from 'element-plus';
 import { User, Lock } from '@element-plus/icons-vue';
-import api from '@/utils/api';
+import api from '@/utils/api/index';
 import type { LoginParams } from '@/types/user';
 import type { FormInstance, FormRules } from 'element-plus';
 
@@ -87,7 +87,7 @@ const handleLogin = async () => {
     isLoading.value = true;
 
     const res = await api.login(loginForm.username, loginForm.password);
-    if (res.code === 200) {
+    if (res?.code === 200) {
       localStorage.setItem('userInfo', JSON.stringify(res.data));
       ElMessage.success('登录成功');
       router.push('/');

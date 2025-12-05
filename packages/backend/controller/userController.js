@@ -61,7 +61,7 @@ exports.login = async (ctx) => {
 
   // 生成新 Token + 更新过期时间
   const token = generateToken(user.id);
-  const tokenExpiration = Date.now() + 7 * 24 * 60 * 60 * 1000;
+  const tokenExpiration = Date.now() + 1 * 24 * 60 * 60 * 1000;
 
   // 返回结果
   ctx.body = {
