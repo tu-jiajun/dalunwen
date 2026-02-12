@@ -55,7 +55,7 @@ import api from '@/utils/api/index';
 import type { Warehouse } from '@/types/warehouse';
 
 const props = defineProps<{
-  rowData: any; // 行数据
+  rowData: any; // 行数据1
   userId: number; // 用户ID
 }>();
 
