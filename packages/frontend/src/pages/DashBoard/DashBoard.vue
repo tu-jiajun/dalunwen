@@ -55,7 +55,7 @@
 
       <!-- 右侧内容区域（子页面渲染在这里） -->
       <div class="main">
-        <DashboardHeader :currentPath="currentBreadcrumb" />
+        <DashboardHeader :currentPath="currentBreadcrumb as string" />
         <!-- 子路由渲染出口：右侧显示 exam1、exam2 对应的组件 -->
         <div class="main-content">
           <router-view />

@@ -2,8 +2,12 @@
   <el-container>
     <el-main>
       <!-- 表格展示临床试验数据 -->
-      <el-table :data="clinicalTrials" border style="width: 100%">
-        <el-table-column prop="reg_number" label="REG编号" width="160" />
+      <el-table :data="clinicalTrials" border style="width: 100%" @row-click="handleRowClick">
+        <el-table-column prop="reg_number" label="REG编号" width="160">
+          <template #default="scope">
+            <span class="clickable-text">{{ scope.row.reg_number }}</span>
+          </template>
+        </el-table-column>
         <el-table-column prop="study_title" label="研究标题" min-width="300" />
         <el-table-column prop="study_status" label="研究状态" width="180" />
         <el-table-column prop="study_type" label="研究类型" width="150" />
@@ -34,6 +38,10 @@
         :disabled="loading"
       />
     </el-main>
+    <ClinicalTrialDetailDrawer
+      v-model="drawerVisible"
+      :data="currentTrialData"
+    />
   </el-container>
 </template>
 
@@ -44,11 +52,17 @@ import api from '@/utils/api/index';
 import type { ClinicalTrialUSA as ClinicalTrial } from '@/types/clinicaltrial';
 import AddToWarehouseButton from './components/AddToWarehouseButton.vue';
 
+import ClinicalTrialDetailDrawer from '@/components/ClinicalTrialDetail/ClinicalTrialDetailDrawer.vue';
+
 const clinicalTrials = ref<ClinicalTrial[]>([]);
 const currentPage = ref(1);
 const pageSize = ref(10);
 const totalCount = ref(0);
 const loading = ref(false);
+
+// 详情抽屉控制
+const drawerVisible = ref(false);
+const currentTrialData = ref<ClinicalTrial | null>(null);
 
 // 获取当前用户ID
 const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
@@ -98,6 +112,12 @@ const handleAddedToWarehouse = (warehouseId: number, rowData: any) => {
   ElMessage.success(`已添加到仓库: ${warehouseId}`);
 };
 
+// 点击行显示详情
+const handleRowClick = (row: ClinicalTrial) => {
+  currentTrialData.value = row;
+  drawerVisible.value = true;
+};
+
 // 组件挂载时初始化数据
 onMounted(() => {
   fetchClinicalTrials();
@@ -109,5 +129,12 @@ defineExpose({
 </script>
 
 <style scoped>
+.clickable-text {
+  cursor: pointer;
+  color: #409eff;
+}
 
+.clickable-text:hover {
+  text-decoration: underline;
+}
 </style>

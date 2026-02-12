@@ -8,12 +8,13 @@
         style="width: 100%"
         v-loading="loading"
         :row-key="(row: ClinicalTrialWarehouse) => row.id"
+        @row-click="handleRowClick"
       >
         <el-table-column prop="id" label="记录ID" width="100" />
         <el-table-column label="试验编号">
           <template #default="scope">
-            <span v-if="scope.row.nct_number">{{ scope.row.nct_number }}</span>
-            <span v-else-if="scope.row.reg_number">{{ scope.row.reg_number }}</span>
+            <span class="clickable-text" v-if="scope.row.nct_number">{{ scope.row.nct_number }}</span>
+            <span class="clickable-text" v-else-if="scope.row.reg_number">{{ scope.row.reg_number }}</span>
             <span v-else>无编号</span>
           </template>
         </el-table-column>
@@ -58,6 +59,10 @@
       />
 
     </el-main>
+    <ClinicalTrialDetailDrawer
+      v-model="drawerVisible"
+      :data="currentTrialData"
+    />
   </el-container>
 </template>
 
@@ -69,6 +74,8 @@ import apiClient from '@/utils/api/apiClient';
 import type { ClinicalTrialWarehouseWithDetails } from '@/types/clinicalTrialWarehouse';
 import type { ClinicalTrialWarehouse } from '@/types/clinicalTrialWarehouse';
 import type { ApiResponse, PageResult } from '@/types/api';
+import ClinicalTrialDetailDrawer from '@/components/ClinicalTrialDetail/ClinicalTrialDetailDrawer.vue';
+import type { ClinicalTrial } from '@/types/clinicaltrial';
 
 // ========== Props ==========
 const props = defineProps<{
@@ -81,6 +88,10 @@ const pageSize = ref(10);
 const totalCount = ref(0);
 const loading = ref(false);
 const trialList = ref<ClinicalTrialWarehouseWithDetails[]>([]);
+
+// 详情抽屉控制
+const drawerVisible = ref(false);
+const currentTrialData = ref<ClinicalTrial | null>(null);
 
 // ========== 方法 ==========
 // 获取仓库中的临床试验列表
@@ -113,6 +124,19 @@ const fetchTrialList = async () => {
   } finally {
     loading.value = false;
   }
+};
+
+// 点击行显示详情
+const handleRowClick = (row: ClinicalTrialWarehouseWithDetails) => {
+  if (row.clinicalUSA) {
+    currentTrialData.value = row.clinicalUSA;
+  } else if (row.clinicalChina) {
+    currentTrialData.value = row.clinicalChina;
+  } else {
+    ElMessage.warning('暂无详细信息');
+    return;
+  }
+  drawerVisible.value = true;
 };
 
 // 移除临床试验
@@ -187,5 +211,14 @@ defineExpose({
 .el-pagination {
   margin-top: 20px;
   justify-content: center;
+}
+
+.clickable-text {
+  cursor: pointer;
+  color: #409eff;
+}
+
+.clickable-text:hover {
+  text-decoration: underline;
 }
 </style>

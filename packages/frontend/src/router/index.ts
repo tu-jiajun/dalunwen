@@ -63,6 +63,30 @@ const router = createRouter({
           meta: { 
             breadcrumb: 'CT仓库 - 详情',
           },
+      },
+      {
+        path: 'CT_match1',
+        name: 'CT_match1',
+        component: () => import('@/components/EmptyPage/EmptyPage.vue'),
+        meta: { breadcrumb: '试验匹配 > 患者匹配临床试验' }
+      },
+      {
+        path: 'CT_match2',
+        name: 'CT_match2',
+        component: () => import('@/components/EmptyPage/EmptyPage.vue'),
+        meta: { breadcrumb: '试验匹配 > 临床试验匹配临床试验' }
+      },
+      {
+        path: 'ct-gen',
+        name: 'ct-gen',
+        component: () => import('@/components/EmptyPage/EmptyPage.vue'),
+        meta: { breadcrumb: '临床试验方案生成' }
+      },
+      {
+        path: 'ct-trend',
+        name: 'ct-trend',
+        component: () => import('@/components/EmptyPage/EmptyPage.vue'),
+        meta: { breadcrumb: '临床试验趋势分析' }
       }
       ]
     }
