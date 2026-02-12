@@ -13,4 +13,7 @@ export const warehouseApi = {
   deleteWarehouse(rowId: number) {
     return apiClient.delete(`api/warehouse/${rowId}`);
   },
+  addTrialToWarehouse(warehouseId: number, trialData: any) {
+    return apiClient.post(`api/warehouse/${warehouseId}/trials`, trialData);
+  },
 };

@@ -7,7 +7,7 @@
         border
         style="width: 100%"
         v-loading="loading"
-        :row-key="(row) => row.id"
+        :row-key="(row: ClinicalTrialWarehouse) => row.id"
       >
         <el-table-column prop="id" label="记录ID" width="100" />
         <el-table-column label="试验编号">
@@ -67,6 +67,8 @@ import { ElMessage, ElMessageBox } from "element-plus";
 import apiClient from '@/utils/api/apiClient';
 
 import type { ClinicalTrialWarehouseWithDetails } from '@/types/clinicalTrialWarehouse';
+import type { ClinicalTrialWarehouse } from '@/types/clinicalTrialWarehouse';
+import type { ApiResponse, PageResult } from '@/types/api';
 
 // ========== Props ==========
 const props = defineProps<{
@@ -89,17 +91,17 @@ const fetchTrialList = async () => {
   try {
     const res = await apiClient.get(
       `api/warehouse/${props.warehouseId}/trials?pageNum=${currentPage.value}&pageSize=${pageSize.value}`
-    );
-    
-    if (res.data.code === 200) {
-      trialList.value = res.data.data.list || [];
-      totalCount.value = res.data.data.total || 0;
+    ) as unknown as ApiResponse<PageResult<ClinicalTrialWarehouseWithDetails>>;
+    console.log(`res ==>`, res);
+    if (res.code === 200) {
+      trialList.value = res.data.list || [];
+      totalCount.value = res.data.total || 0;
       
       if (trialList.value.length === 0 && currentPage.value === 1) {
         ElMessage.info("当前仓库暂无临床试验");
       }
     } else {
-      ElMessage.error(res.data.msg || "获取临床试验数据失败");
+      ElMessage.error(res.msg || "获取临床试验数据失败");
       trialList.value = [];
       totalCount.value = 0;
     }
@@ -133,13 +135,13 @@ const removeTrialFromWarehouse: (row: ClinicalTrialWarehouseWithDetails) => void
     try {
       const res = await apiClient.delete(
         `api/warehouse/${props.warehouseId}/trials?trialIdentifier=${trialIdentifier}`
-      );
+      ) as unknown as ApiResponse<null>;
       
-      if (res.data.code === 200) {
+      if (res.code === 200) {
         ElMessage.success("移除成功");
         fetchTrialList(); // 刷新列表
       } else {
-        ElMessage.error(res.data.msg || "移除失败");
+        ElMessage.error(res.msg || "移除失败");
       }
     } catch (error) {
       const errMsg = error instanceof Error ? error.message : "移除失败";

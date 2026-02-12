@@ -12,7 +12,7 @@
         border
         style="width: 100%"
         v-loading="loading"
-        :row-key="(row) => row.id"
+        :row-key="(row: Warehouse) => row.id"
         @row-click="handleRowClick"
       >
         <el-table-column prop="id" label="仓库ID" width="100" />
@@ -158,7 +158,7 @@ const openAddModal = () => {
 };
 
 const handleRowClick = (row: Warehouse) => {
-  router.push(`ct-rep/${row.id}`); 
+  router.push({ name: 'WarehouseCTPage', params: { warehouseId: row.id } }); 
 };
 
 onMounted(() => {

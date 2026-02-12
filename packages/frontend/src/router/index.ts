@@ -59,6 +59,7 @@ const router = createRouter({
           path: 'ct-rep/:warehouseId',
           name: 'WarehouseCTPage',
           component: () => import('@/pages/DashBoard/components/WarehouseCTPage/WarehouseCTPage.vue'),
+          props: true,
           meta: { 
             breadcrumb: 'CT仓库 - 详情',
           },

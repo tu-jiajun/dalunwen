@@ -48,7 +48,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, defineProps, defineEmits, onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 import type { FormInstance, FormRules } from 'element-plus';
 import { ElMessage } from 'element-plus';
 import api from '@/utils/api/index';
@@ -141,7 +141,10 @@ const handleSubmit = async () => {
     submitLoading.value = true;
     
     // 这里可以添加将数据保存到仓库的逻辑
-    // 暂时只触发事件通知父组件
+    // 调用API将数据保存到仓库
+    await api.addTrialToWarehouse(formData.value.warehouseId, props.rowData);
+
+    // 触发事件通知父组件
     emit('added-to-warehouse', formData.value.warehouseId, props.rowData);
     
     // 关闭对话框

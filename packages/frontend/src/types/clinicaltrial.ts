@@ -63,3 +63,5 @@ export interface ClinicalTrialChina {
   locations: string;
   study_documents: string | null;
 }
+
+export type ClinicalTrial = ClinicalTrialUSA | ClinicalTrialChina;
