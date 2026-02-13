@@ -22,3 +22,13 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# python virtual environment
+venv/
+__pycache__/
+legacy_project/
+*.pyc
+*.pyo
+*.pyd
+
+mock/

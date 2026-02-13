@@ -2,3 +2,4 @@
 - 前端架构vue3.5 + elementplus2.11.8 + ts
 - 后端架构node + koa
 - utils中的api.ts文件是api的调用工具
+- analysis包中的请使用./venv/bin/python替代python
