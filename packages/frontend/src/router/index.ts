@@ -79,13 +79,13 @@ const router = createRouter({
       {
         path: 'ct-gen',
         name: 'ct-gen',
-        component: () => import('@/components/EmptyPage/EmptyPage.vue'),
+        component: () => import('@/pages/DashBoard/components/ClinicalTrialGenerator.vue'),
         meta: { breadcrumb: '临床试验方案生成' }
       },
       {
         path: 'ct-trend',
         name: 'ct-trend',
-        component: () => import('@/components/EmptyPage/EmptyPage.vue'),
+        component: () => import('@/pages/DashBoard/components/ClinicalTrialsTrend.vue'),
         meta: { breadcrumb: '临床试验趋势分析' }
       }
       ]

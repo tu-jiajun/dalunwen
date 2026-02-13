@@ -9,6 +9,7 @@ const userRouter = require('./router/userRouter');
 const CTRouter = require('./router/CTRouter');
 const userWarehouseRouter = require('./router/userWarehouseRouter');
 const clinicalTrialWarehouseRouter = require('./router/clinicalTrialWarehouseRouter');
+const aiRouter = require('./router/aiRouter');
 const initDatabase = require('./config/initDatabase');
 
 // 初始化 Koa 实例
@@ -40,6 +41,7 @@ app.use(userRouter.routes()).use(userRouter.allowedMethods());
 app.use(CTRouter.routes()).use(CTRouter.allowedMethods());
 app.use(userWarehouseRouter.routes()).use(userWarehouseRouter.allowedMethods());
 app.use(clinicalTrialWarehouseRouter.routes()).use(clinicalTrialWarehouseRouter.allowedMethods());
+app.use(aiRouter.routes()).use(aiRouter.allowedMethods());
 
 // 启动服务器
 app.listen(PORT, () => {
