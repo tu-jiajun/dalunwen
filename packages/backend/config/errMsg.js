@@ -20,4 +20,19 @@ module.exports = {
     code: 20001,
     message: '用户名已被占用',
   },
+  'jwt expired': {
+    statusCode: 401,
+    code: 40101,
+    message: '登录已过期，请重新登录',
+  },
+  'invalid token': {
+    statusCode: 401,
+    code: 40102,
+    message: '无效的 token，请重新登录',
+  },
+  'jwt malformed': {
+    statusCode: 401,
+    code: 40103,
+    message: 'Token 格式错误，请重新登录',
+  },
 };

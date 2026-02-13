@@ -71,7 +71,13 @@ apiClient.interceptors.response.use(
     return response.data;
   },
   error => {
-    ElMessage.error(`${error.response?.data?.message || error.message}`);
+    if (error.response?.status === 401) {
+      localStorage.removeItem('userInfo');
+      router.push('/login');
+      ElMessage.error('登录已过期，请重新登录');
+    } else {
+      ElMessage.error(`${error.response?.data?.message || error.message}`);
+    }
     return Promise.reject(error);
   }
 );
