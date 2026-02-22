@@ -86,7 +86,7 @@ const handleLogin = async () => {
     await loginFormRef.value.validate();
     isLoading.value = true;
 
-    const res = await api.login(loginForm.username, loginForm.password);
+    const res: any = await api.login(loginForm.username, loginForm.password);
     if (res?.code === 200) {
       localStorage.setItem('userInfo', JSON.stringify(res.data));
       ElMessage.success('登录成功');

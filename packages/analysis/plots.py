@@ -340,3 +340,114 @@ def generate_failure_plot(df: pd.DataFrame) -> str:
         )
     )
     return c.render_embed()
+
+def generate_survival_plots(df: pd.DataFrame) -> str:
+    """
+    Generate Survival Curves for categorical variables (Line Chart)
+    """
+    if 'Study Status' not in df.columns:
+         return "<div>Error: Missing 'Study Status' column</div>"
+         
+    filtered_df = df[df['Study Status'].isin(['COMPLETED', 'WITHDRAWN', 'TERMINATED', 'SUSPENDED'])].copy()
+    if filtered_df.empty:
+        return "<div>Error: No valid data for survival analysis</div>"
+
+    filtered_df['status'] = (filtered_df['Study Status'] == 'COMPLETED').astype(int)
+    filtered_df['Primary Completion Date'] = pd.to_datetime(filtered_df['Primary Completion Date'], errors='coerce')
+    filtered_df['Start Date'] = pd.to_datetime(filtered_df['Start Date'], errors='coerce')
+    filtered_df['Duration'] = (filtered_df['Primary Completion Date'] - filtered_df['Start Date']).dt.days
+    
+    filtered_df = filtered_df[filtered_df['Duration'] >= 0]
+    
+    if '治疗方式：大模型' in filtered_df.columns:
+        filtered_df.rename(columns={'治疗方式：大模型': 'Treatment'}, inplace=True)
+        
+    translation_dict = {
+        "免疫联合局部治疗": "Immune Combination Local Therapy",
+        "免疫联合靶向治疗": "Immune Combination Targeted Therapy",
+        "单纯双免治疗": "Dual Immune Therapy",
+    }
+    if 'Treatment' in filtered_df.columns:
+        filtered_df['Treatment'] = filtered_df['Treatment'].replace(translation_dict)
+    
+    categorical_vars = [
+        'Phases',
+        'Treatment',
+        'Sample Size Category',
+        'Funder Type',
+        'Allocation',
+        'Intervention Model',
+        'Primary Purpose',
+        'Masking'
+    ]
+    
+    cols_to_use = ['status', 'Duration'] + [c for c in categorical_vars if c in filtered_df.columns]
+    filtered_df = filtered_df[cols_to_use]
+    
+    # Dummy variables
+    cat_cols = [c for c in cols_to_use if c not in ['status', 'Duration']]
+    filtered_df = pd.get_dummies(filtered_df, columns=cat_cols, drop_first=True)
+    all_columns = filtered_df.columns
+    
+    filtered_df['Duration'] = pd.to_numeric(filtered_df['Duration'], errors='coerce')
+    filtered_df.dropna(subset=['Duration', 'status'], inplace=True)
+    
+    try:
+        cph = CoxPHFitter(penalizer=0.1)
+        cph.fit(filtered_df, duration_col="Duration", event_col="status")
+        
+        # We will create a single chart with multiple tabs or just combine them?
+        # Pyecharts doesn't support subplots natively in the same way as matplotlib.
+        # We can use Tab or Grid, but for now let's return one combined chart for the first variable or all in a Tab.
+        from pyecharts.charts import Tab
+        
+        tab = Tab()
+        
+        mean_covariates = filtered_df.mean().copy()
+        
+        for cat_var in categorical_vars:
+            if cat_var not in cols_to_use: # check if original column existed
+                continue
+                
+            line = Line(init_opts=opts.InitOpts(width="100%", height="500px"))
+            cat_dummy_cols = [col for col in all_columns if col.startswith(cat_var + "_")]
+            
+            # Total Survival Curve
+            survival_function = cph.predict_survival_function(mean_covariates.to_frame().T)
+            line.add_xaxis([str(i) for i in survival_function.index.tolist()])
+            line.add_yaxis("Total Survival Curve", survival_function.values.flatten().tolist(), 
+                           is_symbol_show=False, is_smooth=True, 
+                           linestyle_opts=opts.LineStyleOpts(width=3, color="black"))
+            
+            # Baseline
+            baseline_covariates = mean_covariates.copy()
+            for col in cat_dummy_cols:
+                baseline_covariates[col] = 0
+            sf_baseline = cph.predict_survival_function(baseline_covariates.to_frame().T)
+            line.add_yaxis("Baseline Category", sf_baseline.values.flatten().tolist(), is_symbol_show=False, is_step=True)
+            
+            # Other categories
+            for dummy_col in cat_dummy_cols:
+                scenario_covariates = mean_covariates.copy()
+                for col in cat_dummy_cols:
+                    scenario_covariates[col] = 0
+                scenario_covariates[dummy_col] = 1
+                
+                sf = cph.predict_survival_function(scenario_covariates.to_frame().T)
+                category_name = dummy_col.replace(cat_var + "_", "").replace("_", " ")
+                
+                line.add_yaxis(category_name, sf.values.flatten().tolist(), is_symbol_show=False, is_step=True)
+                
+            line.set_global_opts(
+                title_opts=opts.TitleOpts(title=f"Survival by {cat_var}"),
+                tooltip_opts=opts.TooltipOpts(trigger="axis"),
+                xaxis_opts=opts.AxisOpts(name="Days"),
+                yaxis_opts=opts.AxisOpts(name="Survival Probability"),
+                legend_opts=opts.LegendOpts(type_="scroll", pos_right="5%", orient="vertical")
+            )
+            tab.add(line, cat_var)
+            
+        return tab.render_embed()
+        
+    except Exception as e:
+        return f"<div>Error in Cox Model Survival Plots: {str(e)}</div>"

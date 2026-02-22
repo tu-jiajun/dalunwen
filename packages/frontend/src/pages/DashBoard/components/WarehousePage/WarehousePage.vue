@@ -69,11 +69,9 @@ const router = useRouter();
 const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
 const currentUserId = ref(userInfo.userId ?? 0); // 改为响应式，避免取值错误
 const currentPage = ref(1);
-const pageSize = ref(10);
 const totalCount = ref(0);
 const loading = ref(false);
 const warehouseList = ref<Warehouse[]>([]);
-const searchKeyword = ref('');
 
 // ========== 弹窗/编辑状态 ==========
 const addModalVisible = ref(false);
@@ -143,13 +141,6 @@ const handleConfirmDelete = async (rowId: number) => {
     const errMsg = error instanceof Error ? error.message : "删除仓库失败";
     ElMessage.error(errMsg);
   }
-};
-
-// 6. 搜索仓库
-const handleSearchWarehouse = (keyword: string) => {
-  searchKeyword.value = keyword;
-  currentPage.value = 1;
-  fetchWarehouseList();
 };
 
 // 7. 打开新增弹窗

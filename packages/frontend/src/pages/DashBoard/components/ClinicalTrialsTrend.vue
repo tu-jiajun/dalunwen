@@ -61,6 +61,19 @@
         </el-card>
       </el-col>
     </el-row>
+
+    <el-row :gutter="20" style="margin-top: 20px;">
+      <el-col :span="24">
+        <el-card class="box-card" shadow="hover">
+          <template #header>
+            <div class="card-header">
+              <span>各个类别生存分析</span>
+            </div>
+          </template>
+          <iframe src="http://localhost:8000/api/analysis/survival" class="chart-iframe"></iframe>
+        </el-card>
+      </el-col>
+    </el-row>
   </div>
 </template>
 

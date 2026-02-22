@@ -67,13 +67,11 @@
 
 <script setup lang="ts">
 import { Menu, Document } from "@element-plus/icons-vue";
-import { useRouter, useRoute } from "vue-router";
+import { useRoute } from "vue-router";
 import { ref, watch } from "vue";
 import DashboardHeader from '@/pages/DashBoard/DashboardHeader.vue';
 
-const router = useRouter();
 const route = useRoute();
-const defaultRouter = "clinicaltrialstotal"
 
 // 面包屑
 const currentBreadcrumb = ref(route.meta.breadcrumb);

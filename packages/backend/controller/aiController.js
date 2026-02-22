@@ -1,10 +1,11 @@
-const OpenAI = require("openai");
+const aiClient = require("../utils/aiClient");
+const { ALI_LLM_CONFIG } = require("../config/aiConfig");
 
 // Initialize OpenAI client with Aliyun endpoint
-const openai = new OpenAI({
-  apiKey: "sk-a5dd51f65116498ea6270abb19c4d979", // Ideally from env
-  baseURL: "https://dashscope.aliyuncs.com/compatible-mode/v1",
-});
+// const openai = new OpenAI({
+//   apiKey: "sk-a5dd51f65116498ea6270abb19c4d979", // Ideally from env
+//   baseURL: "https://dashscope.aliyuncs.com/compatible-mode/v1",
+// });
 
 async function generateProtocol(ctx) {
   try {
@@ -16,8 +17,8 @@ async function generateProtocol(ctx) {
       return;
     }
 
-    const completion = await openai.chat.completions.create({
-      model: "qwen-max", // Using qwen-max as seen in previous analysis files
+    const completion = await aiClient.chat.completions.create({
+      model: ALI_LLM_CONFIG.MODEL, // Using qwen-max as seen in previous analysis files
       messages: messages,
     });
 

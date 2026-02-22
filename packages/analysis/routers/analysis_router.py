@@ -7,7 +7,8 @@ from plots import (
     generate_treatment_plot, 
     generate_map_plot, 
     generate_weights_plot, 
-    generate_failure_plot
+    generate_failure_plot,
+    generate_survival_plots
 )
 
 router = APIRouter(
@@ -119,6 +120,18 @@ async def analyze_failure():
         # Note: Failure data is in a different sheet
         df = get_data(sheet_name='含有失败原因')
         chart_html = generate_failure_plot(df)
+        return HTMLResponse(content=make_html_response(chart_html))
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"code": 500, "msg": f"Analysis failed: {str(e)}"})
+
+@router.get("/survival")
+async def analyze_survival():
+    """
+    [MOCK] Survival Curves for categorical variables (Tabs with Line Charts)
+    """
+    try:
+        df = get_data(sheet_name='免疫联合治疗')
+        chart_html = generate_survival_plots(df)
         return HTMLResponse(content=make_html_response(chart_html))
     except Exception as e:
         return JSONResponse(status_code=500, content={"code": 500, "msg": f"Analysis failed: {str(e)}"})

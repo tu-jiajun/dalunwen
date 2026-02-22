@@ -76,16 +76,16 @@ import { useRouter } from 'vue-router';
 import { ElMessage } from 'element-plus';
 import { User, Lock } from '@element-plus/icons-vue';
 import api from '@/utils/api/index';
-import type { LoginParams } from '@/types/user';
 import type { FormInstance, FormRules } from 'element-plus';
 
 const router = useRouter();
 const loginFormRef = ref<FormInstance | null>(null);
 const isLoading = ref(false);
 
-const loginForm = reactive<LoginParams>({
+const loginForm = reactive({
   username: '',
-  password: ''
+  password: '',
+  confirmPassword: ''
 });
 
 const loginRules = reactive<FormRules>({
@@ -93,7 +93,7 @@ const loginRules = reactive<FormRules>({
   password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
   confirmPassword: [{ required: true, message: '请确认密码', trigger: 'blur' },
     {
-      validator: (rule, value, callback) => {
+      validator: (_rule, value, callback) => {
         if (value !== loginForm.password) {
           callback(new Error('两次输入的密码不一致'));
         } else {
@@ -112,7 +112,7 @@ const handleRegister = async () => {
     await loginFormRef.value.validate();
     isLoading.value = true;
 
-    const res = await api.register(loginForm.username, loginForm.password);
+    const res: any = await api.register(loginForm.username, loginForm.password);
     if (res.code === 200) {
       localStorage.setItem('userInfo', JSON.stringify(res.data));
       ElMessage.success('注册成功');

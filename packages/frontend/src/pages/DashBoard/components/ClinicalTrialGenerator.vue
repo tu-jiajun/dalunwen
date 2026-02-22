@@ -71,7 +71,7 @@ import { ref, computed, onMounted, watch } from 'vue';
 import { ElMessage } from 'element-plus';
 import type { UploadFile } from 'element-plus';
 import MarkdownIt from 'markdown-it';
-import { aiApi } from '@/utils/api/modules/ai';
+import { aiApi } from '@/utils/api/modules/ai';``
 
 const md = new MarkdownIt();
 
@@ -182,7 +182,7 @@ const generateProtocol = async () => {
       { role: 'user', content: userIdea.value }
     ];
 
-    const res = await aiApi.generateProtocol(messages);
+    const res = await aiApi.generateProtocol(messages) as any;
     console.log("AI Generation Response:", res);
     
     // Assuming the response structure matches standard Axios response wrapped by our interceptor

@@ -67,13 +67,13 @@ const router = createRouter({
       {
         path: 'CT_match1',
         name: 'CT_match1',
-        component: () => import('@/components/EmptyPage/EmptyPage.vue'),
+        component: () => import('@/pages/DashBoard/components/PatientMatch.vue'),
         meta: { breadcrumb: '试验匹配 > 患者匹配临床试验' }
       },
       {
         path: 'CT_match2',
         name: 'CT_match2',
-        component: () => import('@/components/EmptyPage/EmptyPage.vue'),
+        component: () => import('@/pages/DashBoard/components/ClinicalTrialMatch.vue'),
         meta: { breadcrumb: '试验匹配 > 临床试验匹配临床试验' }
       },
       {
@@ -101,6 +101,7 @@ const router = createRouter({
  * @returns void
  */
 router.beforeEach((to, from, next) => {
+  void from;
   // 设置页面标题
   document.title = to.meta.title || title;
   const userInfoStr = localStorage.getItem('userInfo');

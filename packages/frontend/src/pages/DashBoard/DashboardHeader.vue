@@ -21,7 +21,7 @@ import { computed } from 'vue';
 
 const router = useRouter();
 
-const props = defineProps<{
+defineProps<{
   currentPath: string;
 }>();
 
