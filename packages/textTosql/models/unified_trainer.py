@@ -64,7 +64,10 @@ class UnifiedTrainer:
             data_collator = DataCollatorForLanguageModeling(tokenizer=self.tokenizer, mlm=False)
             training_args = TrainingArguments(
                 output_dir=f"{self.output_dir}/{self.model_name}",
-                evaluation_strategy="epoch",
+                evaluation_strategy="steps",
+                eval_steps=100,
+                save_steps=100,
+                logging_steps=10,
                 learning_rate=2e-5,
                 per_device_train_batch_size=batch_size,
                 per_device_eval_batch_size=batch_size,
@@ -85,7 +88,10 @@ class UnifiedTrainer:
             data_collator = DataCollatorForSeq2Seq(tokenizer=self.tokenizer, model=self.model)
             training_args = Seq2SeqTrainingArguments(
                 output_dir=f"{self.output_dir}/{self.model_name}",
-                evaluation_strategy="epoch",
+                evaluation_strategy="steps",
+                eval_steps=100,
+                save_steps=100,
+                logging_steps=10,
                 learning_rate=2e-5,
                 per_device_train_batch_size=batch_size,
                 per_device_eval_batch_size=batch_size,
