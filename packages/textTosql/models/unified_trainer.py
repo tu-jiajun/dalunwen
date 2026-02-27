@@ -30,8 +30,14 @@ class UnifiedTrainer:
         elif not self.is_tapas:
             inputs = self.tokenizer(examples["text"], max_length=128, truncation=True, padding="max_length")
             # Setup the tokenizer for targets
-            with self.tokenizer.as_target_tokenizer():
-                labels = self.tokenizer(examples["structured"], max_length=128, truncation=True, padding="max_length")
+            # Check if tokenizer has as_target_tokenizer (older transformers) or use tokenizer directly (newer transformers)
+            if hasattr(self.tokenizer, "as_target_tokenizer"):
+                with self.tokenizer.as_target_tokenizer():
+                    labels = self.tokenizer(examples["structured"], max_length=128, truncation=True, padding="max_length")
+            else:
+                # For newer transformers (e.g. T5TokenizerFast), just use tokenizer for targets too
+                labels = self.tokenizer(text_target=examples["structured"], max_length=128, truncation=True, padding="max_length")
+                
             inputs["labels"] = labels["input_ids"]
             return inputs
             
