@@ -1,0 +1,26 @@
+# Logs
+logs/
+*.log
+
+# Python Virtual Environment
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Models and Training Results (Large files)
+results/
+models/*
+!models/*.py
+!models/__init__.py
+
+# Generated Data
+data/train.json
+data/validation.json
+data/test.json
+# Keep the generation script
+!data/generate_mock_data.py
+
+# Hugging Face Cache (if present locally)
+.cache/

@@ -32,3 +32,18 @@ legacy_project/
 *.pyd
 
 mock/
+
+# Text-to-SQL Large Files
+packages/textTosql/results/
+packages/textTosql/data/train.json
+packages/textTosql/data/validation.json
+packages/textTosql/data/test.json
+packages/textTosql/venv/
+packages/textTosql/__pycache__/
+packages/textTosql/*.pyc
+packages/textTosql/.cache/
+# Ignore downloaded model files but keep scripts
+packages/textTosql/models/*
+!packages/textTosql/models/*.py
+!packages/textTosql/models/__init__.py
+results/
