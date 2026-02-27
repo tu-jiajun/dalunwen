@@ -37,7 +37,7 @@ def main():
     
     # Train
     # Increase epochs slightly as Spider data is harder but smaller
-    trainer.train(train_path, val_path, epochs=10, batch_size=4)
+    trainer.train(train_path, val_path, epochs=5, batch_size=4)
     
     # Generate JSON
     output_json_path = os.path.join(output_dir, f"{model_name}_results.json")

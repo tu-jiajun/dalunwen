@@ -47,3 +47,5 @@ packages/textTosql/models/*
 !packages/textTosql/models/*.py
 !packages/textTosql/models/__init__.py
 results/
+packages/textTosql/data/spider
+/packages/textTosql/results_spider_medical

@@ -47,7 +47,13 @@ def process():
     
     # Shuffle and Split
     random.shuffle(all_data)
-    n = len(all_data)
+    
+    # [OPTIMIZATION] Limit dataset size for faster training
+    # Use only 2000 samples total (instead of 7000)
+    # This keeps training time reasonable (e.g., < 1 hour) while still learning SQL
+    n = min(len(all_data), 2000)
+    all_data = all_data[:n]
+    
     train_end = int(n * 0.8)
     val_end = int(n * 0.9)
     

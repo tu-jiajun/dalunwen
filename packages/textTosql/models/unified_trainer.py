@@ -86,6 +86,9 @@ class UnifiedTrainer:
             )
         else:
             data_collator = DataCollatorForSeq2Seq(tokenizer=self.tokenizer, model=self.model)
+            # Seq2SeqTrainingArguments inherits from TrainingArguments
+            # But we must ensure all arguments are valid.
+            # predict_with_generate is specific to Seq2SeqTrainingArguments
             training_args = Seq2SeqTrainingArguments(
                 output_dir=f"{self.output_dir}/{self.model_name}",
                 evaluation_strategy="steps",
