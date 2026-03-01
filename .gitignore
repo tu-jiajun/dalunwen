@@ -49,3 +49,5 @@ packages/textTosql/models/*
 results/
 packages/textTosql/data/spider
 /packages/textTosql/results_spider_medical
+packages/textTosql/.venv
+model.safetensors
