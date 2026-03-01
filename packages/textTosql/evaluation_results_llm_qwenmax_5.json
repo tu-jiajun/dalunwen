@@ -1,0 +1,42 @@
+[
+  {
+    "question": "uncontrolled arterial hypertension according to investigator decision",
+    "generated": "SELECT id, hypertension FROM records WHERE hypertension = 'uncontrolled'",
+    "gold": "select id from records where hypertension = 1",
+    "em": false,
+    "ex": false,
+    "model_name": "qwen-max"
+  },
+  {
+    "question": "having a health coverage",
+    "generated": "SELECT * FROM records WHERE health_coverage = 'yes'",
+    "gold": "select id from records where health_coverage = 1",
+    "em": false,
+    "ex": false,
+    "model_name": "qwen-max"
+  },
+  {
+    "question": "final timi  >= 2",
+    "generated": "SELECT * FROM records WHERE final_timi >= 2",
+    "gold": "select id from records where final_timi >= 2",
+    "em": false,
+    "ex": false,
+    "model_name": "qwen-max"
+  },
+  {
+    "question": "patients with loss of consciousness or ( glasgow  <  14 ) ",
+    "generated": "SELECT * FROM records WHERE loss_of_consciousness = 1 OR glasgow_come_score_gcs < 14",
+    "gold": "select id from records where loss_of_consciousness = 1 or glasgow_come_score_gcs < 14",
+    "em": false,
+    "ex": false,
+    "model_name": "qwen-max"
+  },
+  {
+    "question": "known renal insufficiency ( either known creatinin clearance  <  30 ml / min / 1.73 m2 or current medical care for severe renal insufficiency ) ",
+    "generated": "SELECT * FROM records WHERE creatinine_clearance_cl < 30 OR renal_disease = 'severe'",
+    "gold": "select id from records where renal_disease = 1 or ( creatinine_clearance_cl < 30 or renal_disease = 1 ) ",
+    "em": false,
+    "ex": false,
+    "model_name": "qwen-max"
+  }
+]

@@ -2,7 +2,8 @@ import argparse
 import json
 import os
 import torch
-from transformers import BartTokenizer, BartForConditionalGeneration, Seq2SeqTrainer, Seq2SeqTrainingArguments, DataCollatorForSeq2Seq
+from torch.utils.data import DataLoader
+from transformers import AutoModelForSeq2SeqLM, AutoTokenizer, Seq2SeqTrainer, Seq2SeqTrainingArguments, DataCollatorForSeq2Seq
 from datasets import Dataset
 
 def load_tables(tables_file):
@@ -34,6 +35,24 @@ def load_dataset(data_file, tables):
             })
     return data
 
+def train_simple(model, train_dataset, data_collator, args):
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    model.to(device)
+    model.train()
+    optimizer = torch.optim.AdamW(model.parameters(), lr=args.learning_rate, foreach=False)
+    loader = DataLoader(train_dataset, batch_size=args.batch_size, shuffle=True, collate_fn=data_collator)
+    step = 0
+    for _ in range(args.epochs):
+        for batch in loader:
+            batch = {k: v.to(device) for k, v in batch.items()}
+            loss = model(**batch).loss
+            loss.backward()
+            optimizer.step()
+            optimizer.zero_grad(set_to_none=True)
+            step += 1
+            if args.max_steps and step >= args.max_steps:
+                return
+
 def train(args):
     # Check output dir
     if not os.path.exists(args.output_dir):
@@ -47,6 +66,8 @@ def train(args):
     print("Loading training data...")
     train_data_path = os.path.join(args.data_dir, "train.jsonl")
     train_data = load_dataset(train_data_path, tables)
+    if args.limit:
+        train_data = train_data[:args.limit]
     
     # Optional: Load dev data for evaluation
     dev_data = []
@@ -56,6 +77,8 @@ def train(args):
         print("Loading dev data...")
         dev_tables = load_tables(dev_tables_path)
         dev_data = load_dataset(dev_data_path, dev_tables)
+        if args.limit:
+            dev_data = dev_data[:args.limit]
     
     # Create Datasets
     train_dataset = Dataset.from_list(train_data)
@@ -63,28 +86,28 @@ def train(args):
     
     # Tokenizer
     print(f"Loading tokenizer from {args.base_model}...")
-    tokenizer = BartTokenizer.from_pretrained(args.base_model)
+    tokenizer = AutoTokenizer.from_pretrained(args.base_model, use_fast=True)
     
     def preprocess_function(examples):
         inputs = examples["input_text"]
         targets = examples["target_text"]
         
         model_inputs = tokenizer(inputs, max_length=512, truncation=True)
-        
-        with tokenizer.as_target_tokenizer():
-            labels = tokenizer(targets, max_length=128, truncation=True)
+        labels = tokenizer(text_target=targets, max_length=128, truncation=True)
             
         model_inputs["labels"] = labels["input_ids"]
         return model_inputs
     
     print("Preprocessing data...")
     train_dataset = train_dataset.map(preprocess_function, batched=True)
+    train_dataset = train_dataset.remove_columns(["input_text", "target_text"])
     if eval_dataset:
         eval_dataset = eval_dataset.map(preprocess_function, batched=True)
+        eval_dataset = eval_dataset.remove_columns(["input_text", "target_text"])
         
     # Model
     print(f"Loading model from {args.base_model}...")
-    model = BartForConditionalGeneration.from_pretrained(args.base_model)
+    model = AutoModelForSeq2SeqLM.from_pretrained(args.base_model)
     
     # Training Arguments
     training_args = Seq2SeqTrainingArguments(
@@ -118,7 +141,11 @@ def train(args):
     
     # Train
     print("Starting training...")
-    trainer.train()
+    try:
+        trainer.train()
+    except Exception as e:
+        print(f"Trainer failed ({type(e).__name__}: {e}). Falling back to simple training loop.")
+        train_simple(model, train_dataset, data_collator, args)
     
     # Save final model
     print(f"Saving model to {args.output_dir}...")
@@ -134,6 +161,8 @@ if __name__ == "__main__":
     parser.add_argument("--epochs", type=int, default=3, help="Number of training epochs")
     parser.add_argument("--batch_size", type=int, default=8, help="Batch size")
     parser.add_argument("--learning_rate", type=float, default=2e-5, help="Learning rate")
+    parser.add_argument("--limit", type=int, default=None, help="Limit number of training/dev examples for quick test")
+    parser.add_argument("--max_steps", type=int, default=None, help="Max training steps for quick test")
     
     args = parser.parse_args()
     train(args)

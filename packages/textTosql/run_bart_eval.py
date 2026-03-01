@@ -2,7 +2,7 @@ import argparse
 import json
 import sqlite3
 import torch
-from transformers import BartTokenizer, BartForConditionalGeneration
+from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 from tqdm import tqdm
 import os
 
@@ -41,8 +41,8 @@ def evaluate(args):
     # Load model
     print(f"Loading model from {args.model_path}...")
     try:
-        tokenizer = BartTokenizer.from_pretrained(args.model_path)
-        model = BartForConditionalGeneration.from_pretrained(args.model_path)
+        tokenizer = AutoTokenizer.from_pretrained(args.model_path, use_fast=True)
+        model = AutoModelForSeq2SeqLM.from_pretrained(args.model_path)
     except Exception as e:
         print(f"Error loading model: {e}")
         return
@@ -121,7 +121,8 @@ def evaluate(args):
             "generated": generated_sql,
             "gold": gold_sql,
             "em": is_em,
-            "ex": is_ex
+            "ex": is_ex,
+            "model_name": args.model_path
         })
         
     print(f"Total: {total}")
@@ -130,15 +131,15 @@ def evaluate(args):
         print(f"Execution Accuracy: {ex_correct/total:.4f}")
     
     # Save detailed results
-    output_file = "evaluation_results.json"
-    with open(output_file, "w") as f:
+    with open(args.output_file, "w") as f:
         json.dump(results, f, indent=2)
-    print(f"Detailed results saved to {output_file}")
+    print(f"Detailed results saved to {args.output_file}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--model_path", type=str, default="facebook/bart-base", help="Path to the BART model or HuggingFace model name")
+    parser.add_argument("--model_path", type=str, default="facebook/bart-base", help="Path to the model or HuggingFace model name")
     parser.add_argument("--data_dir", type=str, default="/Users/hexiapeng/Documents/Git/dalunwen/packages/textTosql/data/Criteria2SQL/data", help="Path to data directory")
     parser.add_argument("--limit", type=int, default=None, help="Limit number of examples for quick test")
+    parser.add_argument("--output_file", type=str, default="evaluation_results.json", help="Path to save detailed results JSON")
     args = parser.parse_args()
     evaluate(args)

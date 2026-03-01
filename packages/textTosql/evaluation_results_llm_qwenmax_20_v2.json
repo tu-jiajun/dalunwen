@@ -1,0 +1,162 @@
+[
+  {
+    "question": "uncontrolled arterial hypertension according to investigator decision",
+    "generated": "SELECT id FROM records WHERE hypertension = 1",
+    "gold": "select id from records where hypertension = 1",
+    "em": true,
+    "ex": true,
+    "model_name": "qwen-max"
+  },
+  {
+    "question": "having a health coverage",
+    "generated": "SELECT id FROM records WHERE health_coverage = 1",
+    "gold": "select id from records where health_coverage = 1",
+    "em": true,
+    "ex": true,
+    "model_name": "qwen-max"
+  },
+  {
+    "question": "final timi  >= 2",
+    "generated": "SELECT id FROM records WHERE final_timi >= 2",
+    "gold": "select id from records where final_timi >= 2",
+    "em": true,
+    "ex": true,
+    "model_name": "qwen-max"
+  },
+  {
+    "question": "patients with loss of consciousness or ( glasgow  <  14 ) ",
+    "generated": "SELECT id FROM records WHERE loss_of_consciousness = 1 OR glasgow_come_score_gcs < 14",
+    "gold": "select id from records where loss_of_consciousness = 1 or glasgow_come_score_gcs < 14",
+    "em": true,
+    "ex": true,
+    "model_name": "qwen-max"
+  },
+  {
+    "question": "known renal insufficiency ( either known creatinin clearance  <  30 ml / min / 1.73 m2 or current medical care for severe renal insufficiency ) ",
+    "generated": "SELECT id FROM records WHERE creatinine_clearance_cl < 30 OR renal_disease = 1",
+    "gold": "select id from records where renal_disease = 1 or ( creatinine_clearance_cl < 30 or renal_disease = 1 ) ",
+    "em": false,
+    "ex": true,
+    "model_name": "qwen-max"
+  },
+  {
+    "question": "patients with any disorder associated with immunological dysfunction",
+    "generated": "SELECT id FROM records WHERE immunological_dysfunction = 1",
+    "gold": "select id from records where disorder = 1 and immunological_dysfunction = 1",
+    "em": false,
+    "ex": false,
+    "model_name": "qwen-max"
+  },
+  {
+    "question": "active bleeding or known hemorrhagic diathesis",
+    "generated": "SELECT id FROM records WHERE bleeding = 1 OR hemorrhagic_diathesis = 1",
+    "gold": "select id from records where bleeding = 1 or hemorrhagic_diathesis = 1",
+    "em": true,
+    "ex": true,
+    "model_name": "qwen-max"
+  },
+  {
+    "question": "any history of stroke, transient ischemic attack, dementia or structural cns damage e.g. neoplasm, aneurysm, av malformation",
+    "generated": "SELECT id FROM records WHERE stroke = 1 OR transient_ischemic_attack = 1 OR dementia = 1 OR structural_cns_damage = 1 OR neoplasm = 1 OR aneurysm = 1 OR av_malformation = 1",
+    "gold": "select id from records where stroke = 1 or transient_ischemic_attack = 1 or dementia = 1 or structural_cns_damage = 1 or neoplasm = 1 or aneurysm = 1 or av_malformation = 1",
+    "em": true,
+    "ex": true,
+    "model_name": "qwen-max"
+  },
+  {
+    "question": "significant hypertension ( i.e. sbp  >  180 mm hg and / or dbp  >  110 mm hg ) at any time from presentation ( earliest point of care ) to randomisation",
+    "generated": "SELECT id FROM records WHERE systolic_blood_pressure_sbp > 180 OR diastolic_blood_pressure_dbp > 110",
+    "gold": "select id from records where hypertension = 1 or ( systolic_blood_pressure_sbp > 180 or diastolic_blood_pressure_dbp > 110 ) ",
+    "em": false,
+    "ex": false,
+    "model_name": "qwen-max"
+  },
+  {
+    "question": "known renal insufficiency ( prior creatinine  > 2.5 mg %  for male and  > 2 mg %  for female ) ",
+    "generated": "SELECT id FROM records WHERE (gender = 1 AND prior_creatinine > 2.5) OR (gender = 0 AND prior_creatinine > 2)",
+    "gold": "select id from records where renal_disease = 1 or ( ( gender = 'male' and prior_creatinine > 2.5 ) or ( gender = 'female' and prior_creatinine > 2 ) ) ",
+    "em": false,
+    "ex": false,
+    "model_name": "qwen-max"
+  },
+  {
+    "question": "male aged from 18 to 85 and postmenopausal female aged up to 85 years,",
+    "generated": "SELECT id FROM records WHERE (gender = 'male' AND age BETWEEN 18 AND 85) OR (gender = 'female' AND post_menopausal = 1 AND age <= 85)",
+    "gold": "select id from records where ( gender = 'male' and ( age >= 18 and age <= 85 ) ) or ( gender = 'female' and post_menopausal = 1 and age <= 85 ) ",
+    "em": false,
+    "ex": true,
+    "model_name": "qwen-max"
+  },
+  {
+    "question": "cardiogenic shock or severe hemodynamic instability,",
+    "generated": "SELECT id FROM records WHERE cardiogenic_shock = 1 OR severe_hemodynamic_instability = 1",
+    "gold": "select id from records where cardiogenic_shock = 1 or severe_hemodynamic_instability = 1",
+    "em": true,
+    "ex": true,
+    "model_name": "qwen-max"
+  },
+  {
+    "question": "known creatinine clearance  <  30 cc / minute ( severe kidney disease ) ;",
+    "generated": "SELECT id FROM records WHERE creatinine_clearance_cl < 30",
+    "gold": "select id from records where creatinine_clearance_cl < 30 or kidney_disease = 1",
+    "em": false,
+    "ex": false,
+    "model_name": "qwen-max"
+  },
+  {
+    "question": "hemoglobin  <  10 g / dl or clinical evidence of active bleeding during the study period.",
+    "generated": "SELECT id FROM records WHERE hemoglobin_a1c_hba1c < 10 OR clinical_evidence_of_active_bleeding = 1",
+    "gold": "select id from records where hemoglobin_a1c_hba1c < 10 or clinical_evidence_of_active_bleeding = 1",
+    "em": true,
+    "ex": true,
+    "model_name": "qwen-max"
+  },
+  {
+    "question": " >  18 years of age, male or female , capable of giving an informed consent.",
+    "generated": "SELECT id FROM records WHERE age > 18 AND (gender = 'male' OR gender = 'female') AND consent = 1",
+    "gold": "select id from records where age > 18 and ( gender = 'male' or gender = 'female' ) and consent = 1",
+    "em": false,
+    "ex": true,
+    "model_name": "qwen-max"
+  },
+  {
+    "question": "contraindication for nmr ( creatinin clearance  <  30 ml / min / 1.73 m2, metallic implants or claustrophobia ) .",
+    "generated": "SELECT id FROM records WHERE creatinine_clearance_cl < 30 OR metallic_implants = 1 OR claustrophobia = 1",
+    "gold": "select id from records where contraindication_for_nmr = 1 or ( creatinine_clearance_cl < 30 or metallic_implants = 1 or claustrophobia = 1 ) ",
+    "em": false,
+    "ex": false,
+    "model_name": "qwen-max"
+  },
+  {
+    "question": "hemoglobin  <  90 g / l or platelet count  <  10900  /  l.",
+    "generated": "SELECT id FROM records WHERE hemoglobin_a1c_hba1c < 90 OR platelet_count < 10900",
+    "gold": "select id from records where hemoglobin_a1c_hba1c < 90 or platelet_count < 10900",
+    "em": true,
+    "ex": true,
+    "model_name": "qwen-max"
+  },
+  {
+    "question": "untreated or uncontrolled hypertension",
+    "generated": "SELECT id FROM records WHERE hypertension = 1",
+    "gold": "select id from records where hypertension = 1",
+    "em": true,
+    "ex": true,
+    "model_name": "qwen-max"
+  },
+  {
+    "question": "known allergy to the study drugs and instruments ( ufh, bivalirudin, aspirin and clopidogrel, stainless steel, contrast agents, etc. ) , or those allergic constitution.",
+    "generated": "SELECT id FROM records WHERE allergy_to_aspirin = 1",
+    "gold": "select id from records where allergy_to_aspirin = 1",
+    "em": true,
+    "ex": true,
+    "model_name": "qwen-max"
+  },
+  {
+    "question": "pregnancy , lactation or plan to be pregnant.",
+    "generated": "SELECT id FROM records WHERE pregnancy_or_lactation = 1",
+    "gold": "select id from records where pregnancy_or_lactation = 1 or pregnancy_or_lactation = 1",
+    "em": false,
+    "ex": true,
+    "model_name": "qwen-max"
+  }
+]
